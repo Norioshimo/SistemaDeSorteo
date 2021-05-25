@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuariosViewDlg" widgetVar="UsuariosViewDialog" modal="true" resizable="false"  appendTo="@(body)"
+                  responsive="true" class="dialogo" positionType="absolute"
+                  hideEffect="#{myBundle.effectHideDialog}" showEffect="#{myBundle.effectShowDialog}"
+                  header="VER USUARIO" position="#{myBundle.positionDialogCRUD}"
+                  closeOnEscape="true">
+
+            <h:form id="UsuariosViewForm">
+
+                <h:panelGroup id="display" rendered="#{usuariosController.selected != null}">
+                    <p:panelGrid columns="2" 
+                                 style="width: 100%" >
+
+                        <h:outputText value="ID"/>
+                        <h:outputText value="#{usuariosController.selected.usuarioid}"/>
+
+                        <h:outputText value="Nro Documento"/>
+                        <h:outputText value="#{usuariosController.selected.nrodocumento}"  />
+
+                        <h:outputText value="Nombre Completo"/>
+                        <h:outputText value="#{usuariosController.selected.nombrecompleto}"  />
+
+
+                        <h:outputText value="Celular"/>
+                        <h:outputText value="#{usuariosController.selected.celular}" />
+
+                        <h:outputText value="Estado"/>
+                        <h:outputText value="#{usuariosController.selected.estadi=='A'?'ACTIVO':'INACTIVO'}" />
+
+                        <h:outputText value="Tipo Usuario"/>
+                        <h:outputText value="#{usuariosController.selected.tipousuario=='V'?'VENDEDOR':'CLIENTE'}"/> 
+                    </p:panelGrid>
+                    <p:separator/>
+                    <p:commandButton value="#{myBundle.Close}" onclick="PF('UsuariosViewDialog').hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

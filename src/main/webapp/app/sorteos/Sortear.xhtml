@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SorteosDlg" widgetVar="SorteoDialog" modal="true" resizable="false" appendTo="@(body)" 
+                  responsive="true" class="dialogo" positionType="absolute"
+                  hideEffect="#{myBundle.effectHideDialog}" showEffect="#{myBundle.effectShowDialog}"
+                  header="SORTEAR LAS RIFAS" position="#{myBundle.positionDialogCRUD}"
+                  closeOnEscape="true">
+
+            <h:form id="SorteosForm" onkeypress="if (event.keyCode == 13) {
+                        return false
+                    }">
+
+                <h:panelGroup id="display" rendered="#{sorteosController.selected != null}">
+
+                    <p:panelGrid columns="4" 
+                                 columnClasses="
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-4 ui-lg-4,
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-4 ui-lg-4" 
+                                 layout="grid" 
+                                 style="width: 100%" class="ui-panelgrid-blank">
+                        <p:outputLabel value="Fecha Sorteo" for="fechasorteo" />
+                        <p:calendar id="fechasorteo"  pattern="MM/dd/yyyy HH:mm:ss"  inputStyleClass="inputClass"
+                                    value="#{sorteosController.selected.fechasorteo}"
+                                    disabled="true"
+                                    required="true" requiredMessage="El campo Fecha es requerido."
+                                    placeholder="DD/MM/YYYY" mask="true" locale="es" />
+
+                        <p:outputLabel value="Nombre Sorteo:" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{sorteosController.selected.descripcion}"  maxlength="200" 
+                                     disabled="true"
+                                     style="width: 100%"/>
+
+
+                        <p:outputLabel value="Cantidad de Rifas Vendidas" for="cantidadRifa"/>
+                        <p:inputNumber id="cantidadRifa" disabled="true"
+                                       value="#{sorteosController.selected.rifasList.size()}" emptyValue="0"
+                                       decimalSeparator="," inputStyleClass="inputClass" 
+                                       padControl="false" thousandSeparator="." />
+
+                        <p:outputLabel value="Monto Total Vendido" for="montocompra"/>
+                        <p:inputNumber id="montocompra" disabled="true"
+                                       value="#{sorteosController.selected.totalventa}" emptyValue="0"
+                                       decimalSeparator="," inputStyleClass="inputClass" 
+                                       padControl="false" thousandSeparator="." />
+                    </p:panelGrid>
+
+                    <p:commandButton  actionListener="#{sorteosController.sortear}" value="Sortear !!!" 
+                                      style="font-size: 25px !important;"
+                                      title="Presione el botón para sortear las rifas."
+                                      disabled="#{sorteosController.selected.estado!='N'}"
+                                      update="datalistPremios,:growl,SorteosForm:idBotonGuardarSorteo" oncomplete="handleSubmitNoHide(xhr,status,args,PF('SorteoDialog'));"/>
+                    <p:outputLabel style="font-size: 20px !important;color: red !important;" value="Este sorteo está #{sorteosController.selected.estado=='F'?'Finalizada':'Cancelada'}" rendered="#{sorteosController.selected.estado!='N'}"/>
+                  
+                    <p:dataTable id="datalistPremios"
+                                 scrollable="true" scrollHeight="180"
+                                 var="item"
+                                 value="#{sorteosController.selected.premiosList}"
+                                 rowKey="#{item.premioid}"
+                                 reflow="true"
+                                 sortBy="#{item.puesto}"
+                                 emptyMessage="#{myBundle.TablaVacia}">
+
+                        <f:facet name="header">
+                            <h:outputText value="LISTA DE PREMIOS Y BENEFICIARIOS"/>
+                        </f:facet>
+
+                        <p:column headerText="ID" rendered="false" style="width:50px">
+                            <h:outputText value="#{item.premioid}"/>
+                        </p:column>
+
+                        <p:column headerText="Puesto" style="width: 50px">
+                            <h:outputText value="#{item.puesto}" style="float: right">
+                                <f:convertNumber locale="es_ES"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Nombre Premio">
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>
+
+                        <p:column headerText="Beneficiario" >
+                            <h:outputText value="#{item.rifaid.usuarioid.nombrecompleto}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+
+                    <p:separator/>
+                    <p:commandButton 
+                        id="idBotonGuardarSorteo"
+                        disabled="#{!sorteosController.sorteado}"
+                        rendered="#{sorteosController.selected.estado=='N'}"
+                        actionListener="#{sorteosController.guardarResultadoSorteos}" value="#{myBundle.Save}" update="display,:SorteosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,PF('SorteoDialog'));">
+                        <p:confirm header="#{myBundle.ConfirmationHeader}" message="#{myBundle.ConfirmCreateMessage}" icon="#{myBundle.iconConfirm}"/>
+                    </p:commandButton>
+
+                    <p:commandButton value="#{myBundle.Cancel}" oncomplete="PF('SorteoDialog').hide()" update="display" process="@this" immediate="true" resetValues="true"/>
+
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RifasViewDlg" widgetVar="RifasViewDialog" modal="true" resizable="false"  appendTo="@(body)" 
+                  responsive="true" class="dialogo" positionType="absolute"
+                  hideEffect="#{myBundle.effectHideDialog}" showEffect="#{myBundle.effectShowDialog}"
+                  header="CREAR SORTEO" position="#{myBundle.positionDialogCRUD}"
+                  closeOnEscape="true">
+
+            <h:form id="RifasViewForm">
+
+                <h:panelGroup id="display" rendered="#{rifasController.selected != null}">
+                    <p:fieldset legend="Datos de Sorteo">
+
+                        <p:panelGrid columns="4" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4,
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank">
+                            <p:outputLabel value="Fecha Sorteo" style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.sorteoid.fechasorteo}" >
+                                <f:convertDateTime locale="es_ES" pattern="dd/MM/yyyy HH:mm:ss"/>
+                            </p:outputLabel>
+
+                            <p:outputLabel value="Estado" style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.sorteoid.estado=='F'?'FINALIZADO':rifasController.selected.sorteoid.estado=='N'?'NUEVO':rifasController.selected.sorteoid.estado=='C'?'CANCELADO':'DESCONOCIDO'}" />
+
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-10 ui-lg-10" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank">
+
+                            <p:outputLabel value="Nombre Sorteo:"  style="font-weight: bold" />
+                            <p:outputLabel value="#{rifasController.selected.sorteoid.descripcion}"  />
+                        </p:panelGrid>
+                        
+                        <p:dataTable id="datalistPremios"
+                                     scrollable="true" scrollHeight="150"
+                                     var="item"
+                                     value="#{rifasController.selected.sorteoid.premiosList}"
+                                     rowKey="#{item.premioid}"
+                                     reflow="true"
+                                     sortBy="#{item.puesto}"
+                                     emptyMessage="#{myBundle.TablaVacia}">
+
+                            <f:facet name="header">
+                                <h:outputText value="LISTA DE PREMIOS Y BENEFICIARIOS"/>
+                            </f:facet>
+
+                            <p:column headerText="ID" rendered="false" style="width:50px">
+                                <h:outputText value="#{item.premioid}"/>
+                            </p:column>
+
+                            <p:column headerText="Puesto" style="width: 50px">
+                                <h:outputText value="#{item.puesto}" style="float: right">
+                                    <f:convertNumber locale="es_ES"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Nombre Premio">
+                                <h:outputText value="#{item.descripcion}"/>
+                            </p:column>
+
+                            <p:column headerText="Beneficiario" >
+                                <h:outputText value="#{item.rifaid.usuarioid.nombrecompleto}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:fieldset>
+                    <br/>
+                    <p:fieldset legend="Datos de Rifa">
+                        <p:panelGrid columns="4" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4,
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank">
+
+                            <p:outputLabel value="Nro Rifa"  style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.nrorifa}" >
+                                <f:convertNumber locale="es_ES"/>
+                            </p:outputLabel>
+
+                            <p:outputLabel value="Fecha Compra"  style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.fechacompra}" >
+                                <f:convertDateTime locale="es_ES" pattern="dd/MM/yyyy HH:mm:ss"/>
+                            </p:outputLabel>
+
+                             <p:outputLabel value="Nro Documento:"  style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.usuarioid.nrodocumento}" />
+
+
+                            <p:outputLabel value="Nombre Cliente:"  style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.usuarioid.nombrecompleto}"  />
+
+                            <p:outputLabel value="Celular:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{rifasController.selected.usuarioid.celular}"  />
+
+                            <p:outputLabel value="Precio de Rifa:" style="font-weight: bold" />
+                            <p:outputLabel  value="#{rifasController.selected.precio}">
+                                <f:convertNumber locale="es_ES"/>
+                            </p:outputLabel>
+
+                        </p:panelGrid>
+                    </p:fieldset>
+
+                    <p:separator/>
+                    <p:commandButton value="#{myBundle.Close}" onclick="PF('RifasViewDialog').hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

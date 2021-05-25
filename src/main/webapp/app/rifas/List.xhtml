@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RifasListForm">
+
+        <p:panel header="LISTADO DE RIFAS">
+            <p:contextMenu id="RifasDataTableContextMenu" for="datalist" >  
+                <p:menuitem value="#{myBundle.View}" onclick="document.getElementById('RifasListForm:viewButton').click();" icon="#{myBundle.iconVer}"/>
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{rifasController.items}"
+                         lazy="false"
+                         rowKey="#{item.rifaid}"
+                         var="item"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50,100"
+                         selectionMode="single"
+                         selection="#{rifasController.selected}"
+                         emptyMessage="#{myBundle.TablaVacia}"
+                         widgetVar="wgdatalist"
+                         filterEvent="enter"
+                         sortBy="#{item.rifaid}"
+                         sortOrder="descending"
+                         reflow="true"
+                         paginatorPosition="bottom"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         >
+
+                <p:ajax event="rowSelect"   update="@form:viewButton,@form:RifasDataTableContextMenu"/>
+                <p:ajax event="rowUnselect" update="@form:viewButton,@form:RifasDataTableContextMenu"/>
+                <p:ajax event="contextMenu" update="@form:viewButton"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RifasListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.nrorifa}" filterBy="#{item.nrorifa}" style="width:80px">
+                    <f:facet name="header">
+                        <h:outputText value="Nro Rifa"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nrorifa}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechacompra}" filterBy="#{item.fechacompra}" style="width: 125px">
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Compra"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechacompra}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.sorteoid.descripcion}" filterBy="#{item.sorteoid.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="Sorteo"/>
+                    </f:facet>
+                    <h:outputText value="#{item.sorteoid.descripcion}"/>
+                </p:column>
+
+                  <p:column sortBy="#{item.sorteoid.estado}" filterBy="#{item.sorteoid.estado}" style="width: 120px">
+
+                    <f:facet name="header">
+                        <h:outputText value="Estado"/>
+                    </f:facet>
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('wgdatalist').filter()" >
+                            <f:selectItem itemLabel="TODO" itemValue="" />
+                            <f:selectItem itemLabel="FINALIZADO" itemValue="F" />
+                            <f:selectItem itemLabel="NUEVO" itemValue="N" />
+                            <f:selectItem itemLabel="CANCELADO" itemValue="C" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{item.sorteoid.estado=='F'?'FINALIZADO':item.sorteoid.estado=='N'?'NUEVO':item.sorteoid.estado=='C'?'CANCELADO':'DESCONOCIDO'}"/>
+                </p:column>
+                
+                <p:column sortBy="#{item.usuarioid.nrodocumento}" filterBy="#{item.usuarioid.nrodocumento}"  style="width: 125px" rendered="#{loginBean.rolUsuario=='V'}">
+                    <f:facet name="header">
+                        <h:outputText value="Nro Documento"/>
+                    </f:facet>
+                    <h:outputText value="#{item.usuarioid.nrodocumento}"/>
+                </p:column>
+
+                <p:column sortBy="#{item.precio}" filterBy="#{item.precio}"  style="width: 125px">
+                    <f:facet name="header">
+                        <h:outputText value="Precio"/>
+                    </f:facet>
+                    <h:outputText value="#{item.precio}" style="float: right">
+                        <f:convertNumber locale="es_ES"/>
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{myBundle.View}" update=":RifasViewForm" oncomplete="PF('RifasViewDialog').show()" disabled="#{empty rifasController.selected}"/>
+
+        </p:panel>
+        <ui:include src="/app/confirmation.xhtml"/>
+    </h:form>
+
+</ui:composition>

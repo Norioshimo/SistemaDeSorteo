@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RifasCreateDlg" widgetVar="RifaDialog" modal="true" resizable="false" appendTo="@(body)" 
+                  responsive="true" class="dialogo" positionType="absolute"
+                  hideEffect="#{myBundle.effectHideDialog}" showEffect="#{myBundle.effectShowDialog}"
+                  header="VENTA DE RIFA" position="#{myBundle.positionDialogCRUD}"
+                  closeOnEscape="true">
+
+            <h:form id="RifaForm" onkeypress="if (event.keyCode == 13) {
+                        return false
+                    }">
+
+                <h:panelGroup id="display" rendered="#{sorteosController.selected != null}">
+
+                    <p:panelGrid columns="4" 
+                                 columnClasses="
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-4 ui-lg-4,
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-4 ui-lg-4" 
+                                 layout="grid" 
+                                 style="width: 100%" class="ui-panelgrid-blank">
+                        <p:outputLabel value="Fecha Sorteo" for="fechasorteo" />
+                        <p:calendar id="fechasorteo"  pattern="MM/dd/yyyy HH:mm:ss"  inputStyleClass="inputClass"
+                                    value="#{sorteosController.selected.fechasorteo}"
+                                    disabled="true"
+                                    required="true" requiredMessage="El campo Fecha es requerido."
+                                    placeholder="DD/MM/YYYY" mask="true" locale="es" />
+
+                        <p:outputLabel value="Precio de Rifa:" for="precioRifa"/>
+                        <p:inputNumber id="precioRifa" disabled="true"
+                                       value="#{sorteosController.selected.preciorifa}"
+                                       decimalSeparator="," inputStyleClass="inputClass" 
+                                       padControl="false" thousandSeparator="." /> 
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" 
+                                 columnClasses="
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-10 ui-lg-10" 
+                                 layout="grid" 
+                                 style="width: 100%" class="ui-panelgrid-blank">
+
+                        <p:outputLabel value="Nombre Sorteo:" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{sorteosController.selected.descripcion}"  maxlength="200" 
+                                     disabled="true"
+                                     style="width: 100%"/>
+
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="4" 
+                                 columnClasses="
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-4 ui-lg-4,
+                                 ui-g-12 ui-md-2 ui-lg-2, 
+                                 ui-g-12 ui-md-4 ui-lg-4" 
+                                 layout="grid" 
+                                 style="width: 100%" class="ui-panelgrid-blank">
+                        <p:outputLabel value="Nro Documento:" for="nrodocumento" />
+                        <h:panelGroup class="ui-inputgroup">
+                            <p:inputText id="nrodocumento" value="#{sorteosController.nroDocumentoAbuscar}"  maxlength="200" 
+                                         title="Ingrese el nro de documento y precione enter para la busqueda"
+                                         style="width: 100%" onkeypress="if (event.keyCode == 13) {
+                                                     buscarClientePorEnter()
+                                                 }"/>
+
+                            <p:commandButton icon="pi pi-search" process="@this" 
+                                             update=":UsuariosBuscadorForm" oncomplete="PF('UsuariosBuscadorDialog').show()"
+                                             actionListener="#{sorteosController.setearClienteBuscador}"
+                                             title="Buscar el cliente por el buscador"/>
+                        </h:panelGroup>
+
+                        <p:outputLabel value="Nombre Cliente:" for="nombrecompleto" />
+                        <p:inputText id="nombrecompleto" value="#{sorteosController.rifa.usuarioid.nombrecompleto}"  maxlength="200" 
+                                     disabled="true"
+                                     style="width: 100%"/>
+                        
+                         <p:outputLabel value="Celular:" for="celular" />
+                         <p:inputText id="celular" value="#{sorteosController.rifa.usuarioid.celular}"  maxlength="200" 
+                                     disabled="true"
+                                     style="width: 100%"/>
+                        
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        
+                        <p:outputLabel value="Cantidad" for="cantidad"/>
+                        <p:inputNumber id="cantidad" 
+                                       value="#{sorteosController.cantidadComprar}" 
+                                       decimalSeparator="," inputStyleClass="inputClass" 
+                                       minValue="1"
+                                       padControl="false" thousandSeparator="." >
+                            <p:ajax  event="keyup" process="@this" update="montocompra" 
+                                     listener="#{sorteosController.calcularMontoAbonar}"/>
+                        </p:inputNumber> 
+
+                        <p:outputLabel value="Monto a Abonar" for="montocompra"/>
+                        <p:inputNumber id="montocompra" disabled="true"
+                                       value="#{sorteosController.total}" emptyValue="0"
+                                       decimalSeparator="," inputStyleClass="inputClass" 
+                                       padControl="false" thousandSeparator="." />
+                    </p:panelGrid>
+                    <p:separator/>
+                    <p:commandButton process="@this,RifaForm:cantidad" actionListener="#{sorteosController.guardarRifa}" value="#{myBundle.Save}" update="display,:SorteosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,PF('RifaDialog'));">
+                        <p:confirm header="#{myBundle.ConfirmationHeader}" message="#{myBundle.ConfirmCreateMessage}" icon="#{myBundle.iconConfirm}"/>
+                    </p:commandButton>
+
+                    <p:commandButton value="#{myBundle.Cancel}" oncomplete="PF('RifaDialog').hide()" update="display" process="@this" immediate="true" resetValues="true"/>
+                    <p:remoteCommand name="buscarClientePorEnter" process="@this,RifaForm:nrodocumento" update=":growl,RifaForm:nombrecompleto,RifaForm:celular" actionListener="#{sorteosController.buscarCliente()}"/>
+
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

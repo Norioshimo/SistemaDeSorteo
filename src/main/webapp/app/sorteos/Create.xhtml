@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SorteosCreateDlg" widgetVar="SorteosCreateDialog" modal="true" resizable="false" appendTo="@(body)" 
+                  responsive="true" class="dialogo" positionType="absolute"
+                  hideEffect="#{myBundle.effectHideDialog}" showEffect="#{myBundle.effectShowDialog}"
+                  header="CREAR SORTEO" position="#{myBundle.positionDialogCRUD}"
+                  closeOnEscape="true">
+
+            <h:form id="SorteosCreateForm">
+
+                <h:panelGroup id="display" rendered="#{sorteosController.selected != null}">
+                    <p:fieldset id="idFiel1">
+                        <p:panelGrid columns="4" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4,
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank">
+                            <p:outputLabel value="Fecha Sorteo" for="fechasorteo" />
+                            <p:calendar id="fechasorteo"  pattern="MM/dd/yyyy HH:mm:ss"  inputStyleClass="inputClass"
+                                        value="#{sorteosController.selected.fechasorteo}"
+                                        required="true" requiredMessage="El campo Fecha es requerido."
+                                        placeholder="DD/MM/YYYY" mask="true" locale="es" />
+
+                            <p:outputLabel value="Estado:" for="estado" />
+                            <p:selectOneMenu id="estado" value="#{sorteosController.selected.estado}"  style="width: 100%" 
+                                             disabled="true"
+                                             required="true" requiredMessage="El campo Estado es requerido.">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItem itemLabel="FINALIZADO" itemValue="F" />
+                                <f:selectItem itemLabel="NUEVO" itemValue="N" />
+                                <f:selectItem itemLabel="CANCELADO" itemValue="C" />                      
+                            </p:selectOneMenu>
+
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-10 ui-lg-10" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank">
+
+                            <p:outputLabel value="Nombre Sorteo:" for="descripcion" />
+                            <p:inputText id="descripcion" value="#{sorteosController.selected.descripcion}"  maxlength="200" 
+                                         required="true" requiredMessage="El campo Nombre Sorteo es requerido"
+                                         style="width: 100%"/>
+
+
+                            <p:outputLabel value="Comentario" for="comentario" />
+                            <p:inputText style="width: 100%;" id="comentario"
+                                             value="#{sorteosController.selected.comentario}"  maxlength="255" />
+                        </p:panelGrid>
+                        <p:panelGrid columns="4" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4,
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-4 ui-lg-4" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank">
+                            <p:outputLabel value="Precio de Rifa:" for="precioRifa"/>
+                            <p:inputNumber id="precioRifa" required="true" requiredMessage="El campo Precio de Rifa es requerido."
+                                           value="#{sorteosController.selected.preciorifa}"
+                                           decimalSeparator="," inputStyleClass="inputClass" 
+                                           padControl="false" thousandSeparator="." />
+
+                            <p:outputLabel value="Monto Total Venta:" for="totalVenta"/>
+                            <p:inputNumber id="totalVenta" 
+                                           value="#{sorteosController.selected.totalventa}"
+                                           disabled="true"
+                                           decimalSeparator="," inputStyleClass="inputClass" 
+                                           padControl="false" thousandSeparator="." />
+
+                        </p:panelGrid>
+                    </p:fieldset>
+                    <br/>
+
+                    <p:fieldset>
+                        <p:panelGrid columns="2" 
+                                     columnClasses="
+                                     ui-g-12 ui-md-2 ui-lg-2, 
+                                     ui-g-12 ui-md-10 ui-lg-10" 
+                                     layout="grid" 
+                                     style="width: 100%" class="ui-panelgrid-blank" id="idPanelGrid2">
+                            <p:outputLabel value="Nombre Premio:" for="descripcion2" />
+                            <p:inputText id="descripcion2" value="#{sorteosController.detallePremio.descripcion}"  maxlength="200" 
+                                         required="true" requiredMessage="El campo Nombre Premio es requerido"
+                                         style="width: 100%"/>
+
+                            <p:outputLabel value="Puesto:" for="puesto" />
+                            <h:panelGroup style="display: flex;justify-content: space-between">
+
+                                <p:inputNumber id="puesto" required="true" requiredMessage="El campo puesto es requerido."
+                                               value="#{sorteosController.detallePremio.puesto}"
+                                               decimalSeparator="," inputStyleClass="inputClass" 
+                                               padControl="false" thousandSeparator="." />
+
+                                <p:commandButton value="Agregar" 
+                                                 icon="#{myBundle.iconCrear}" style="width:90px;float: right"
+                                                 process="idPanelGrid2" 
+                                                 oncomplete="handleSubmitNoHide(xhr,status,args,PF('SorteosCreateDialog'));"
+                                                 update="idPanelGrid2,datalistPremios,:growl"
+                                                 actionListener="#{sorteosController.addPremio()}"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                        <p:dataTable id="datalistPremios"
+                                     scrollable="true" scrollHeight="180"
+                                     var="item"
+                                     value="#{sorteosController.selected.premiosList}"
+                                     rowKey="#{item.premioid}"
+                                     reflow="true"
+                                     sortBy="#{item.puesto}"
+                                     emptyMessage="#{myBundle.TablaVacia}">
+
+                            <f:facet name="header">
+                                <h:outputText value="LISTA DE PREMIOS"/>
+                            </f:facet>
+
+                            <p:column headerText="ID" rendered="false" style="width:50px">
+                                <h:outputText value="#{item.premioid}"/>
+                            </p:column>
+
+                            <p:column headerText="Puesto" style="width: 80px">
+                                <h:outputText value="#{item.puesto}" style="float: right">
+                                    <f:convertNumber locale="es_ES"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Nombre Premio">
+                                <h:outputText value="#{item.descripcion}"/>
+                            </p:column>
+
+
+
+
+                            <p:column  class="accion" headerText="Acciones">
+                                <p:commandButton actionListener="#{sorteosController.editPremio(item)}" 
+                                                 update=":SorteosCreateForm:idPanelGrid2" 
+                                                 title="Modificar el Premio"
+                                                 process="@this"
+                                                 icon="#{myBundle.iconEditar}"/> 
+                                <p:commandButton actionListener="#{sorteosController.deletePremio(item)}" 
+                                                 update=":SorteosCreateForm:datalistPremios" 
+                                                 title="Eliminar el Premio"
+                                                 process="@this"
+                                                 icon="#{myBundle.iconEliminar}"/> 
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:fieldset>
+                    <p:separator/>
+                    <p:commandButton process="@this,idFiel1" actionListener="#{sorteosController.saveNew}" value="#{myBundle.Save}" update="display,:SorteosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,PF('SorteosCreateDialog'));">
+                        <p:confirm header="#{myBundle.ConfirmationHeader}" message="#{myBundle.ConfirmCreateMessage}" icon="#{myBundle.iconConfirm}"/>
+                    </p:commandButton>
+
+                    <p:commandButton value="#{myBundle.Cancel}" oncomplete="PF('SorteosCreateDialog').hide()" update="display" process="@this" immediate="true" resetValues="true"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

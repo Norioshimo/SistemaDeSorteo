@@ -1,0 +1,160 @@
+.ui-widget {
+    font-size: 12px !important;
+}
+.ui-layout-north {
+    z-index:20 !important;
+    overflow:visible !important;;
+}
+.ui-layout-north .ui-layout-unit-content {
+    overflow:visible !important;
+}
+.ui-widget-header {
+    text-align: center;
+    text-transform: uppercase;
+}
+.ui-datatable .ui-datatable-footer .footer-section {
+    text-align: left;
+}
+
+.column {
+    font-weight: bold;
+    background-color: menu;
+}
+
+/*--------------Agregado por Norio*/
+
+body .ui-dialog .ui-dialog-titlebar {
+    text-align: left;
+}
+.ui-widget-content {
+    background:#fafafa;
+}
+
+.ui-widget-header {
+    /*background: #007ad9 !important;
+    border-color: #007ad9!important;
+    color: white !important;*/
+    font-weight: bold !important;
+}
+
+.ui-panel-content{
+    /*border: transparent !important;
+    background:#fafafa !important;*/
+    height: 100%;
+}
+
+
+/*Estilo para scrollbar*/
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    height:10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #003891; 
+    border-radius: 8px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(0, 122, 217); 
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(234,234,234); 
+}
+
+
+/*grande*/
+@media screen and (min-width: 500px) {
+    .web{
+        display:block !important;
+    }
+    .mobile{
+        display:none !important;
+    }
+
+}
+/*mobile*/
+@media screen and (max-width: 499px) {
+    .web{
+        display:none !important;
+    }
+    .mobile{
+        display:block !important;
+    }
+}
+
+
+
+.inputClass{
+    width: 100% !important
+}
+
+/* uso para la grillas*/
+@media screen and (min-width: 500px) {
+    .idClass{width: 80px}
+    .empresaClass{width: 150px}
+
+    /* Dialogo en general*/
+    .dialogo{
+        max-height: 100vh;
+        overflow-y: auto !important;
+    }
+}
+
+@media screen and (max-width: 499px) {
+    .idClass{width: auto}
+    .empresaClass{width: auto}
+
+    /* Dialogo en general*/
+    .dialogo{
+        max-height: 87vh;
+        overflow-y: auto !important;
+    }
+}
+/*
+body .ui-datatable thead th .ui-column-title {
+    font-weight: bold;
+}*/
+
+body .ui-datatable thead th.ui-state-active{
+    background-color: rgb(0, 122, 217);
+}
+
+body .ui-datatable thead th{
+    background-color:#333;
+    color: rgb(255, 255, 255);
+}
+
+
+
+
+.ui-column-title{
+    font-weight: bold !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

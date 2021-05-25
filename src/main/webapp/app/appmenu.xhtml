@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <h:form id="menuForm">
+            <p:menubar autoDisplay="false">
+                <p:menuitem value="Inicio" outcome="/index" icon="fa fa-home"/>
+                <p:submenu label="Administrativos" rendered="#{loginBean.rolUsuario=='V'}">
+                    <p:menuitem value="Usuarios" outcome="/app/usuarios/index" />
+                </p:submenu>
+                <p:submenu label="Operativos">
+                    <p:menuitem value="Rifas" outcome="/app/rifas/index" />
+                    <p:menuitem value="Sorteos" outcome="/app/sorteos/index"  rendered="#{loginBean.rolUsuario=='V'}"/>
+                </p:submenu>
+                <p:menuitem  value="Cerrar Sesión" icon="fa fa-sign-out"  ajax="false" action="#{loginBean.logout()}" />
+            </p:menubar>
+        </h:form>
+    </ui:composition>
+
+</html>

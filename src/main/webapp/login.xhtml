@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title><ui:insert name="title">#{myBundle.AppName}</ui:insert></title>
+
+        <h:outputStylesheet library="css" name="pfcrud.css"/>
+        <h:outputStylesheet library="css" name="pfcrud_logueo.css"/>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/font-awesome/css/font-awesome.min.css"></link>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,height=device-height"/>
+        <f:metadata>
+            <f:viewAction action="#{loginBean.isLoggedInForwardHome()}" />
+        </f:metadata>
+    </h:head> 
+
+    <h:body>
+        <p:growl id="mensajes" life="10000"/>
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="center" style="background: #ebeeef !important;border:none !important">
+                <div class="limiter">
+                    <!--<div class="container-login100">-->
+                    <div class="wrap-login100" align="center">
+                        <div class="login100-form-title"/>
+                        <h:form id="idFormLogin">
+                            <p:graphicImage value="/resources/images/fpuna_logo_institucional.svg" height="80px"/><br/><br/>
+                            <p:outputLabel value="ACCESO AL SISTEMA" class="textoAcceso"/><br/><br/>
+                          
+                            <div class="ui-inputgroup" style="padding-bottom: 8px">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <p:inputText value="#{loginBean.user}" id="username" placeholder="USUARIO" class="formularioInput"
+                                             required="true" requiredMessage="USUARIO es un campo requerido."/>
+                            </div>
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                                <p:password value="#{loginBean.pass}" id="password"
+                                            required="true" requiredMessage="CONTRASEÑA es un campo requerido." 
+                                            placeholder="CONTRASEÑA" class="formularioInput"
+                                            autocomplete="new-password"
+                                            />
+                            </div>
+                            <p:commandButton  style="margin-top: 10px" id="loginButton" value="ACCEDER" icon="fa fa-sign-in"
+                                              actionListener="#{loginBean.login}" update=":mensajes,idFormLogin" ajax="true"/>
+                        </h:form>
+                    </div>
+                    <!--</div>-->
+
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+
+
+
+    </h:body>
+</html>

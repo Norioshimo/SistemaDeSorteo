@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuariosBuscadorDlg" widgetVar="UsuariosBuscadorDialog" modal="true" resizable="false" appendTo="@(body)" 
+                  responsive="true" class="dialogo" positionType="absolute"
+                  hideEffect="#{myBundle.effectHideDialog}" showEffect="#{myBundle.effectShowDialog}"
+                  header="BUSCAR CLIENTES" position="#{myBundle.positionDialogCRUD}"
+                  closeOnEscape="true">
+
+            <h:form id="UsuariosBuscadorForm">
+
+                <h:panelGroup id="display" rendered="#{sorteosController.rifa!= null}">
+                    <p:dataTable id="datalist"
+                                 value="#{sorteosController.listaClientes}"
+                                 lazy="false"
+                                 rowKey="#{item.usuarioid}"
+                                 var="item"
+                                 paginator="true"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50,100"
+                                 selectionMode="single"
+                                 selection="#{sorteosController.cliente}"
+                                 emptyMessage="#{myBundle.TablaVacia}"
+                                 widgetVar="wgdatalist"
+                                 filterEvent="enter"
+                                 sortBy="#{item.nombrecompleto}"
+                                 reflow="true"
+                                 paginatorPosition="bottom"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 >
+
+
+                        <p:ajax event="rowSelect"   oncomplete="PF('UsuariosBuscadorDialog').hide()"
+                                listener="#{sorteosController.clienteSeleccionado}"
+                                process="@this" update="RifaForm:nrodocumento,RifaForm:nombrecompleto,RifaForm:celular"/>
+
+                        <p:column sortBy="#{item.usuarioid}" filterBy="#{item.usuarioid}" rendered="false">
+                            <f:facet name="header">
+                                <h:outputText value="ID"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuarioid}"/>
+                        </p:column>
+
+
+                        <p:column sortBy="#{item.nrodocumento}" filterBy="#{item.nrodocumento}">
+                            <f:facet name="header">
+                                <h:outputText value="Nro Documento"/>
+                            </f:facet>
+                            <h:outputText value="#{item.nrodocumento}"/>
+                        </p:column>
+
+
+                        <p:column sortBy="#{item.nombrecompleto}" filterBy="#{item.nombrecompleto}">
+                            <f:facet name="header">
+                                <h:outputText value="Nombre Completo"/>
+                            </f:facet>
+                            <h:outputText value="#{item.nombrecompleto}"/>
+                        </p:column>
+
+
+
+                        <p:column sortBy="#{item.celular}" filterBy="#{item.celular}">
+                            <f:facet name="header">
+                                <h:outputText value="Celular"/>
+                            </f:facet>
+                            <h:outputText value="#{item.celular}"/>
+                        </p:column>
+
+
+                        <p:column sortBy="#{item.estadi}" filterBy="#{item.estadi}">
+                            <f:facet name="header">
+                                <h:outputText value="Estado"/>
+                            </f:facet>
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('wgdatalist').filter()" >
+                                    <f:selectItem itemLabel="TODO" itemValue="" />
+                                    <f:selectItem itemLabel="ACTIVO" itemValue="A" />
+                                    <f:selectItem itemLabel="INACTIVO" itemValue="I" />
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{item.estadi=='A'?'ACTIVO':item.estadi=='I'?'INACTIVO':'DESCONOCIDO'}"/>
+                        </p:column>
+
+
+                    </p:dataTable>
+
+
+                    <p:commandButton value="#{myBundle.Close}" oncomplete="PF('UsuariosBuscadorDialog').hide()" update="display" process="@this" immediate="true" resetValues="true"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="UsuariosListForm">
+
+        <p:panel header="LISTA DE USUARIOS">
+            <p:contextMenu id="UsuariosDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{myBundle.Create}" onclick="document.getElementById('UsuariosListForm:createButton').click();" icon="#{myBundle.iconCrear}"/>
+                <p:menuitem value="#{myBundle.View}" onclick="document.getElementById('UsuariosListForm:viewButton').click();" icon="#{myBundle.iconVer}"/>
+                <p:menuitem value="#{myBundle.Edit}" onclick="document.getElementById('UsuariosListForm:editButton').click();" icon="#{myBundle.iconEditar}"/>
+                <p:menuitem value="#{myBundle.Delete}" onclick="document.getElementById('UsuariosListForm:deleteButton').click();" icon="#{myBundle.iconEliminar}"/>
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{usuariosController.items}"
+                         lazy="false"
+                         rowKey="#{item.usuarioid}"
+                         var="item"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50,100"
+                         selectionMode="single"
+                         selection="#{usuariosController.selected}"
+                         emptyMessage="#{myBundle.TablaVacia}"
+                         widgetVar="wgdatalist"
+                         filterEvent="enter"
+                         sortBy="#{item.usuarioid}"
+                         sortOrder="descending"
+                         reflow="true"
+                         paginatorPosition="bottom"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         >
+
+
+                <p:ajax event="rowSelect"   update="@form:createButton,@form:viewButton,@form:editButton,@form:deleteButton,@form:UsuariosDataTableContextMenu"/>
+                <p:ajax event="rowUnselect" update="@form:createButton,@form:viewButton,@form:editButton,@form:deleteButton,@form:UsuariosDataTableContextMenu"/>
+                <p:ajax event="contextMenu" update="@form:createButton @form:viewButton @form:editButton @form:deleteButton"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('UsuariosListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.usuarioid}" filterBy="#{item.usuarioid}" style="width: 100px">
+                    <f:facet name="header">
+                        <h:outputText value="ID"/>
+                    </f:facet>
+                    <h:outputText value="#{item.usuarioid}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nrodocumento}" filterBy="#{item.nrodocumento}" style="width: 120px">
+                    <f:facet name="header">
+                        <h:outputText value="Nro Documento"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nrodocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombrecompleto}" filterBy="#{item.nombrecompleto}">
+                    <f:facet name="header">
+                        <h:outputText value="Nombre Completo"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombrecompleto}"/>
+                </p:column>
+
+
+
+                <p:column sortBy="#{item.celular}" filterBy="#{item.celular}" style="width: 120px">
+                    <f:facet name="header">
+                        <h:outputText value="Celular"/>
+                    </f:facet>
+                    <h:outputText value="#{item.celular}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.estadi}" filterBy="#{item.estadi}" style="width: 100px">
+                    <f:facet name="header">
+                        <h:outputText value="Estado"/>
+                    </f:facet>
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('wgdatalist').filter()" >
+                            <f:selectItem itemLabel="TODO" itemValue="" />
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A" />
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{item.estadi=='A'?'ACTIVO':item.estadi=='I'?'INACTIVO':'DESCONOCIDO'}"/>
+                </p:column>
+
+                <p:column sortBy="#{item.tipousuario}" filterBy="#{item.tipousuario}" style="width: 100px">
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Usuario"/>
+                    </f:facet>
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('wgdatalist').filter()" >
+                            <f:selectItem itemLabel="TODO" itemValue="" />
+                            <f:selectItem itemLabel="VENDEDOR" itemValue="V" />
+                            <f:selectItem itemLabel="CLIENTE" itemValue="C" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{item.tipousuario=='V'?'VENDEDOR':item.tipousuario=='C'?'CLIENTE':'DESCIBICUDO'}"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="#{myBundle.iconCrear}"   value="#{myBundle.Create}" actionListener="#{usuariosController.prepareCreate}" update=":UsuariosCreateForm" oncomplete="PF('UsuariosCreateDialog').show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{myBundle.View}" update=":UsuariosViewForm" oncomplete="PF('UsuariosViewDialog').show()" disabled="#{empty usuariosController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{myBundle.Edit}" update=":UsuariosEditForm" oncomplete="PF('UsuariosEditDialog').show()" disabled="#{empty usuariosController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{myBundle.Delete}" actionListener="#{usuariosController.delete}" update=":growl,datalist" disabled="#{empty usuariosController.selected}">
+                <p:confirm header="#{myBundle.ConfirmationHeader}" message="#{myBundle.ConfirmDeleteMessage}"  icon="#{myBundle.iconConfirm}"/>
+            </p:commandButton>
+
+        </p:panel>
+        <ui:include src="/app/confirmation.xhtml"/>
+    </h:form>
+
+</ui:composition>

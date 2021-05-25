@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="SorteosListForm">
+
+        <p:panel header="LISTA DE SORTEOS">
+            <p:contextMenu id="SorteosDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{myBundle.Create}" onclick="document.getElementById('SorteosListForm:createButton').click();" icon="#{myBundle.iconCrear}"/>
+                <p:menuitem value="#{myBundle.View}" onclick="document.getElementById('SorteosListForm:viewButton').click();" icon="#{myBundle.iconVer}"/>
+                <p:menuitem value="#{myBundle.Edit}" onclick="document.getElementById('SorteosListForm:editButton').click();" icon="#{myBundle.iconEditar}"/>
+                <p:menuitem value="#{myBundle.Delete}" onclick="document.getElementById('SorteosListForm:deleteButton').click();" icon="#{myBundle.iconEliminar}"/>
+
+                <p:separator/>
+                <p:menuitem rendered="#{sorteosController.selected.estado=='N'}" value="Vender Rifa" onclick="document.getElementById('SorteosListForm:rifaButton').click();" icon="fa fa-bookmark"/>
+                <p:menuitem value="Sortear Rifas" onclick="document.getElementById('SorteosListForm:sortearButton').click();" icon="fa fa-bomb"/>
+
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{sorteosController.items}"
+                         lazy="false"
+                         rowKey="#{item.sorteoid}"
+                         var="item"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50,100"
+                         selectionMode="single"
+                         selection="#{sorteosController.selected}"
+                         emptyMessage="#{myBundle.TablaVacia}"
+                         widgetVar="wgdatalist"
+                         filterEvent="enter"
+                         sortBy="#{item.sorteoid}"
+                         sortOrder="descending"
+                         reflow="true"
+                         paginatorPosition="bottom"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         >
+
+
+
+                <p:ajax event="rowSelect"   update="@form:sortearButton,@form:rifaButton, @form:createButton,@form:viewButton,@form:editButton,@form:deleteButton,@form:SorteosDataTableContextMenu"/>
+                <p:ajax event="rowUnselect" update="@form:sortearButton,@form:rifaButton, @form:createButton,@form:viewButton,@form:editButton,@form:deleteButton,@form:SorteosDataTableContextMenu"/>
+                <p:ajax event="contextMenu" update="@form:sortearButton @form:rifaButton @form:createButton @form:viewButton @form:editButton @form:deleteButton"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('SorteosListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.sorteoid}" filterBy="#{item.sorteoid}" style="width: 80px">
+                    <f:facet name="header">
+                        <h:outputText value="ID"/>
+                    </f:facet>
+                    <h:outputText value="#{item.sorteoid}"/>
+                </p:column>
+
+                <p:column sortBy="#{item.fechasorteo}" filterBy="#{item.fechasorteo}" style="width: 125px">
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Sorteo"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechasorteo}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column sortBy="#{item.descripcion}" filterBy="#{item.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="Nombre Sorteo"/>
+                    </f:facet>
+                    <h:outputText value="#{item.descripcion}"/>
+                </p:column>
+
+                
+                <p:column sortBy="#{item.estado}" filterBy="#{item.estado}" style="width: 120px">
+
+                    <f:facet name="header">
+                        <h:outputText value="Estado"/>
+                    </f:facet>
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('wgdatalist').filter()" >
+                            <f:selectItem itemLabel="TODO" itemValue="" />
+                            <f:selectItem itemLabel="FINALIZADO" itemValue="F" />
+                            <f:selectItem itemLabel="NUEVO" itemValue="N" />
+                            <f:selectItem itemLabel="CANCELADO" itemValue="C" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{item.estado=='F'?'FINALIZADO':item.estado=='N'?'NUEVO':item.estado=='C'?'CANCELADO':'DESCONOCIDO'}"/>
+                </p:column>
+
+
+
+                
+                <p:column sortBy="#{item.preciorifa}" filterBy="#{item.preciorifa}" style="width: 100px">
+                    <f:facet name="header">
+                        <h:outputText value="Precio Rifa"/>
+                    </f:facet>
+                    <h:outputText value="#{item.preciorifa}" style="float: right">
+                        <f:convertNumber locale="es_ES"/>
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column style="width: 100px">
+                    <f:facet name="header">
+                        <h:outputText value="Monto Total Vendido"/>
+                    </f:facet>
+                    <h:outputText value="#{item.totalventa}" style="float: right">
+                        <f:convertNumber locale="es_ES"/>
+                    </h:outputText>
+                </p:column>
+
+
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                            icon="#{myBundle.iconCrear}"  value="#{myBundle.Create}" actionListener="#{sorteosController.prepareCreate}" update=":SorteosCreateForm" oncomplete="PF('SorteosCreateDialog').show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{myBundle.View}" actionListener="#{sorteosController.prepareView}" update=":SorteosViewForm" oncomplete="PF('SorteosViewDialog').show()" disabled="#{empty sorteosController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{myBundle.Edit}" actionListener="#{sorteosController.prepareEdit}" update=":SorteosEditForm" oncomplete="PF('SorteosEditDialog').show()" disabled="#{empty sorteosController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{myBundle.Delete}" actionListener="#{sorteosController.delete}" update=":growl,datalist" disabled="#{empty sorteosController.selected}">
+                <p:confirm header="#{myBundle.ConfirmationHeader}" message="#{myBundle.ConfirmDeleteMessage}"  icon="#{myBundle.iconConfirm}"/>
+            </p:commandButton>
+
+            <p:commandButton id="rifaButton"   style="visibility: hidden;"  actionListener="#{sorteosController.prepareRifa}" update=":RifaForm" oncomplete="PF('RifaDialog').show()" disabled="#{empty sorteosController.selected}"/>
+            <p:commandButton id="sortearButton"   style="visibility: hidden;" actionListener="#{sorteosController.prepareSorteo}" update=":SorteosForm" oncomplete="PF('SorteoDialog').show()" disabled="#{empty sorteosController.selected}"/>
+        </p:panel>
+        <ui:include src="/app/confirmation.xhtml"/>
+    </h:form>
+
+</ui:composition>
