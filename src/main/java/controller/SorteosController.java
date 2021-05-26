@@ -169,7 +169,7 @@ public class SorteosController extends AbstractController<Sorteos> {
 
     public void prepareRifa() {
         rifa = new Rifas();
-
+        rifa.setSorteoid(this.getSelected());
         rifa.setFechacompra(new Date());
         rifa.setPrecio(this.getSelected().getPreciorifa());
         cantidadComprar = BigDecimal.ONE;
