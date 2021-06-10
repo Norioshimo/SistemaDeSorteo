@@ -36,6 +36,7 @@ public class LoginBean implements Serializable {
     @PostConstruct
     public void init() {
         System.out.println("Iniciar Sesion(loginBean)");
+        usuarioFacade = new UsuariosFacade();
     }
 
     public void setUser(String user) {
@@ -86,9 +87,10 @@ public class LoginBean implements Serializable {
         Usuarios usuario = null;
         logeado = false;
         try {
+            
             usuario = usuarioFacade.findByUsuario(user);
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             usuario = null;
         }
         if (usuario != null) {
@@ -102,10 +104,9 @@ public class LoginBean implements Serializable {
             }
             usuarioFacade.edit(usuario);
         } else {
-            JsfUtil.addErrorMessage("No existe el usuario "+user);
-            user="";
+            JsfUtil.addErrorMessage("No existe el usuario " + user);
+            user = "";
         }
-        
 
         if (logeado) {
 

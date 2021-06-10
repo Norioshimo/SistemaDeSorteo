@@ -5,6 +5,7 @@
  */
 package facade;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +25,7 @@ import org.primefaces.model.MatchMode;
  *
  * @author HP
  */
-public abstract class AbstractFacade<T> {
+public abstract class AbstractFacade<T> implements Serializable{
 
     protected Class<T> entityClass;
 
@@ -53,7 +54,10 @@ public abstract class AbstractFacade<T> {
     public List<T> findAll() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
-        return getEntityManager().createQuery(cq).getResultList();
+        System.out.println("FindAll:"+entityClass);
+        List<T> lista = getEntityManager().createQuery(cq).getResultList();
+        System.out.println(lista);
+        return lista;
     }
 
     public List<T> findRange(int[] range) {
@@ -194,7 +198,7 @@ public abstract class AbstractFacade<T> {
                     predicates.add(cb.equal((javax.persistence.criteria.Expression<?>) pkFieldPath, hourdateFormat.format(d)));
                 } else {
                     String v = filters.get(s).getFilterValue().toString();
-                    v=v.replace(" ", "");
+                    v = v.replace(" ", "");
                     javax.persistence.criteria.Expression<?> filterExpression = getCastExpression(v, fieldTypeName, cb);
                     if (filterExpression != null) {
                         predicates.add(cb.equal((javax.persistence.criteria.Expression<?>) pkFieldPath, filterExpression));
@@ -204,7 +208,7 @@ public abstract class AbstractFacade<T> {
                 }
             }
         }
-        
+
         return predicates;
     }
 

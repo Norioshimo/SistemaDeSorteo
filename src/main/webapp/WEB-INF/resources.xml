@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!--
+  <Resource id="conexion_sorteoweb" type="javax.sql.DataSource">#Wed Jun 02 08:52:02 PYT 2021
+jdbcDriver=org.postgresql.Driver
+password=sorteo
+userName=sorteo
+jdbcUrl=jdbc\:postgresql\://localhost\:5432/db_sorteo
+</Resource>
+
+
+<Resource name="jdbc/sorteo" id="conextion_sorteoweb" type="javax.sql.DataSource">#Wed Jun 02 08:52:02 PYT 2021
+jdbcDriver=org.postgresql.Driver
+password=031de6bc4a8240cb3438af3ef194568e96f525dd21170f775f96adc80ba1eb7f
+userName=alxpggmyfxqfwz
+jdbcUrl=jdbc\:postgresql\://ec2-54-87-112-29.compute-1.amazonaws.com\:5432/dejvvag8g0vnhv
+</Resource>
+-->
+
+</resources>

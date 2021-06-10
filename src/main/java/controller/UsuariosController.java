@@ -1,11 +1,7 @@
 package controller;
 
-import entity.Premios;
 import entity.Usuarios;
-import entity.Rifas;
-import java.util.List;
-import facade.UsuariosFacade;
-import java.util.ArrayList;
+import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -19,6 +15,12 @@ public class UsuariosController extends AbstractController<Usuarios> {
     public UsuariosController() {
         // Inform the Abstract parent controller of the concrete Usuarios Entity
         super(Usuarios.class);
+        System.out.println("Usuario controller inicializado en eon contructor");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Usuario controller inicializado");
     }
 
     public String getClave() {
@@ -35,7 +37,7 @@ public class UsuariosController extends AbstractController<Usuarios> {
 
     @Override
     public void save(ActionEvent event) {
-        if (!"".equals(clave) && clave!=null) {
+        if (!"".equals(clave) && clave != null) {
             this.getSelected().setClave(clave);
         }
 

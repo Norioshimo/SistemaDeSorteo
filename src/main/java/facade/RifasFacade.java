@@ -18,7 +18,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class RifasFacade extends AbstractFacade<Rifas> {
 
-    @PersistenceContext(unitName = "sorteo_SorteoWeb_war_1PU")
+    @PersistenceContext(unitName = "sorteo_SorteoWebTomEE_war_1PU")
     private EntityManager em;
 
     @Override

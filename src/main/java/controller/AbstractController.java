@@ -23,13 +23,13 @@ public abstract class AbstractController<T> implements Serializable {
 
     @Inject
     protected AbstractFacade<T> ejbFacade;
-    private Class<T> itemClass;
-    private T selected;
+    protected Class<T> itemClass;
+    protected T selected;
     protected List<T> items;
-    private LazyEntityDataModel<T> lazyItems;
-    private List<T> filteredItems;
+    protected LazyEntityDataModel<T> lazyItems;
+    protected List<T> filteredItems;
 
-    private enum PersistAction {
+    protected enum PersistAction {
         CREATE,
         DELETE,
         UPDATE
@@ -75,8 +75,12 @@ public abstract class AbstractController<T> implements Serializable {
     }
 
     public Collection<T> getItems() {
+        System.out.println("getItems");
         if (items == null) {
+            System.out.println("Intes es null");
             items = this.ejbFacade.findAll();
+        }else{
+            System.out.println(items);
         }
         return items;
     }
